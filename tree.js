@@ -1,16 +1,47 @@
-import { node } from "./node";
+import { Node } from "./node.js";
+import { prettyPrint } from "./pretty-tree.js";
 
-class tree {
-  constructor(arr) {
-    this.root = buildTree(arr);
+const Tree = (arr) => {
+  const root = buildTree(clearArr(arr));
+
+  function clearArr(arrToClear) {
+    const sortedArr = [...new Set(arrToClear)].sort((a, b) => a - b);
+    return sortedArr;
   }
-}
 
-function buildTree(arr, start = 0, end = arr.length() - 1) {
+  function includes(value, node = root) {
+    if (node === null) {
+      return false;
+    }
+    if (value === node.data) {
+      return true;
+    }
+
+    return includes(value, node.left) || includes(value, node.right);
+  }
+
+  return {
+    buildTree: () => {
+      return root;
+    },
+    includes,
+  };
+};
+
+function buildTree(sortedArr, start = 0, end = sortedArr.length - 1) {
   if (start > end) {
     return null;
   }
-  const sortedArr = arr.toSorted();
   const mid = Math.floor((start + end) / 2);
-  const node = new Node();
+  const root = new Node(sortedArr[mid]);
+
+  root.left = buildTree(sortedArr, start, mid - 1);
+  root.right = buildTree(sortedArr, mid + 1, end);
+
+  return root;
 }
+
+const tree = Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+
+prettyPrint(tree.buildTree());
+console.log(tree.includes(100));
