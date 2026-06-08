@@ -20,11 +20,33 @@ const Tree = (arr) => {
     return includes(value, node.left) || includes(value, node.right);
   }
 
+  function insert(value, node = root) {
+    if (typeof value !== "number" || Number.isNaN(value)) {
+      throw new Error("The value is not a number");
+    }
+
+    if (node === null) {
+      return new Node(value);
+    }
+
+    if (value === node.data) {
+      return node;
+    }
+
+    if (value > node.data) {
+      node.right = insert(value, node.right);
+    } else {
+      node.left = insert(value, node.left);
+    }
+    return node;
+  }
+
   return {
     buildTree: () => {
       return root;
     },
     includes,
+    insert,
   };
 };
 
@@ -44,4 +66,5 @@ function buildTree(sortedArr, start = 0, end = sortedArr.length - 1) {
 const tree = Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 
 prettyPrint(tree.buildTree());
-console.log(tree.includes(100));
+tree.insert(100);
+prettyPrint(tree.buildTree());
