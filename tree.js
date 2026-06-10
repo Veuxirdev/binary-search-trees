@@ -67,10 +67,16 @@ const Tree = (arr) => {
 
   function levelOrderTraversal(callback, nodeQ = [root]) {
     if (nodeQ.length === 0) {
-      return nodeQ;
+      return;
     }
-
-    return levelOrderTraversal(callback, nodeQ);
+    const newQueue = [];
+    nodeQ.forEach((node) => {
+      if (node) {
+        callback(node.data);
+        newQueue.push(node.left, node.right);
+      }
+    });
+    return levelOrderTraversal(callback, newQueue);
   }
 
   function deleteItem(value) {
