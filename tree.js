@@ -2,7 +2,7 @@ import { Node } from "./node.js";
 import { prettyPrint } from "./pretty-tree.js";
 
 const Tree = (arr) => {
-  const root = buildTree(clearArr(arr));
+  let root = buildTree(clearArr(arr));
 
   function clearArr(arrToClear) {
     const sortedArr = [...new Set(arrToClear)].sort((a, b) => a - b);
@@ -41,12 +41,50 @@ const Tree = (arr) => {
     return node;
   }
 
+  // loop levelOrderTraversal
+
+  /*
+  function levelOrderTraversal(callback, queueArr = [root]) {
+    const queue = queueArr;
+    for (let i = queue.length - 1; i >= 0; i--) {
+      if (callback) callback(queue[i].data);
+      const leftRef = queue[i].left;
+      const rightRef = queue[i].right;
+      queue.pop();
+      if (leftRef) {
+        queue.push(leftRef);
+        i++;
+      }
+      if (rightRef) {
+        queue.push(rightRef);
+        i++;
+      }
+    }
+  }
+*/
+
+  // recursive levelOrderTraversal
+
+  function levelOrderTraversal(callback, nodeQ = [root]) {
+    if (nodeQ.length === 0) {
+      return nodeQ;
+    }
+
+    return levelOrderTraversal(callback, nodeQ);
+  }
+
+  function deleteItem(value) {
+    root = deleteNode(value, root);
+  }
+
   return {
     buildTree: () => {
       return root;
     },
     includes,
     insert,
+    deleteItem,
+    levelOrderTraversal,
   };
 };
 
@@ -63,8 +101,33 @@ function buildTree(sortedArr, start = 0, end = sortedArr.length - 1) {
   return root;
 }
 
+function searchInOrderSuccessor(rightNode) {
+  if (rightNode.left === null) {
+    return rightNode;
+  }
+  return searchInOrderSuccessor(rightNode.left);
+}
+
+function deleteNode(value, node) {
+  if (node === null) {
+    return node;
+  }
+
+  if (node.data > value) node.left = deleteNode(value, node.left);
+  else if (node.data < value) node.right = deleteNode(value, node.right);
+  else {
+    if (node.left === null) return node.left;
+
+    if (node.right === null) return node.right;
+
+    const successor = searchInOrderSuccessor(node.right);
+    node.data = successor.data;
+    node.right = deleteNode(successor.data, node.right);
+  }
+  return node;
+}
+
 const tree = Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 
 prettyPrint(tree.buildTree());
-tree.insert(100);
-prettyPrint(tree.buildTree());
+tree.levelOrderTraversal((nodeData) => console.log(nodeData));
