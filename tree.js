@@ -103,9 +103,18 @@ const Tree = (arr) => {
     return;
   }
 
-  function height(value) {
+  function height(value, node = root, heightCount = 0) {
     if (!value) {
       return;
+    }
+    if (node) {
+      if (value < node.data) {
+        return height(value, node.left, heightCount + 1);
+      } else if (value > node.data) {
+        return height(value, node.right, heightCount + 1);
+      } else {
+        return heightCount;
+      }
     }
   }
 
@@ -184,4 +193,4 @@ const tree = Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 
 prettyPrint(tree.buildTree());
 tree.levelOrderTraversal((nodeData) => console.log(nodeData));
-console.log(tree.height(23));
+console.log(tree.height(5));
