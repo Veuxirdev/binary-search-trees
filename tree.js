@@ -45,6 +45,9 @@ const Tree = (arr) => {
 
   /*
   function levelOrderTraversal(callback, queueArr = [root]) {
+  if(!callback){
+      throw new Error("A callback function is required");
+    }
     const queue = queueArr;
     for (let i = queue.length - 1; i >= 0; i--) {
       if (callback) callback(queue[i].data);
@@ -66,6 +69,9 @@ const Tree = (arr) => {
   // recursive levelOrderTraversal
 
   function levelOrderTraversal(callback, nodeQ = [root]) {
+    if (!callback) {
+      throw new Error("A callback function is required");
+    }
     if (nodeQ.length === 0) {
       return;
     }
@@ -77,6 +83,45 @@ const Tree = (arr) => {
       }
     });
     return levelOrderTraversal(callback, newQueue);
+  }
+
+  function inOrderTraversal(callback, node = root) {
+    if (!callback) {
+      throw new Error("A callback function is required");
+    }
+    if (node === null) {
+      return node;
+    }
+    node.left = inOrderTraversal(callback, node.left);
+    callback(node.data);
+    node.right = inOrderTraversal(callback, node.right);
+    return;
+  }
+
+  function preOrderTraversal(callback, node = root) {
+    if (!callback) {
+      throw new Error("A callback function is required");
+    }
+    if (node === null) {
+      return node;
+    }
+    callback(node.data);
+    node.left = preOrderTraversal(callback, node.left);
+    node.right = preOrderTraversal(callback, node.right);
+    return;
+  }
+
+  function postOrderTraversal(callback, node = root) {
+    if (!callback) {
+      throw new Error("A callback function is required");
+    }
+    if (node === null) {
+      return node;
+    }
+    node.left = postOrderTraversal(callback, node.left);
+    node.right = postOrderTraversal(callback, node.right);
+    callback(node.data);
+    return;
   }
 
   function deleteItem(value) {
@@ -91,6 +136,9 @@ const Tree = (arr) => {
     insert,
     deleteItem,
     levelOrderTraversal,
+    preOrderTraversal,
+    inOrderTraversal,
+    postOrderTraversal,
   };
 };
 
@@ -136,4 +184,4 @@ function deleteNode(value, node) {
 const tree = Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 
 prettyPrint(tree.buildTree());
-tree.levelOrderTraversal((nodeData) => console.log(nodeData));
+tree.postOrderTraversal((nodeData) => console.log(nodeData));
