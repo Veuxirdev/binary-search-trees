@@ -43,31 +43,23 @@ const Tree = (arr) => {
 
   // loop levelOrderTraversal
 
-  /*
-  function levelOrderTraversal(callback, queueArr = [root]) {
-  if(!callback){
+  function levelOrderTraversal(callback) {
+    if (!callback) {
       throw new Error("A callback function is required");
     }
-    const queue = queueArr;
-    for (let i = queue.length - 1; i >= 0; i--) {
-      if (callback) callback(queue[i].data);
-      const leftRef = queue[i].left;
-      const rightRef = queue[i].right;
-      queue.pop();
-      if (leftRef) {
-        queue.push(leftRef);
-        i++;
-      }
-      if (rightRef) {
-        queue.push(rightRef);
-        i++;
-      }
-    }
+    const queue = [root];
+    let currentNode = {};
+    do {
+      currentNode = queue[0];
+      callback(currentNode.data);
+      queue.shift();
+      if (currentNode.left) queue.push(currentNode.left);
+      if (currentNode.right) queue.push(currentNode.right);
+    } while (queue.length !== 0);
   }
-*/
 
   // recursive levelOrderTraversal
-
+  /*
   function levelOrderTraversal(callback, nodeQ = [root]) {
     if (!callback) {
       throw new Error("A callback function is required");
@@ -84,7 +76,7 @@ const Tree = (arr) => {
     });
     return levelOrderTraversal(callback, newQueue);
   }
-
+*/
   function inOrderTraversal(callback, node = root) {
     if (!callback) {
       throw new Error("A callback function is required");
@@ -109,6 +101,12 @@ const Tree = (arr) => {
     node.left = preOrderTraversal(callback, node.left);
     node.right = preOrderTraversal(callback, node.right);
     return;
+  }
+
+  function height(value) {
+    if (!value) {
+      return;
+    }
   }
 
   function postOrderTraversal(callback, node = root) {
@@ -139,6 +137,7 @@ const Tree = (arr) => {
     preOrderTraversal,
     inOrderTraversal,
     postOrderTraversal,
+    height,
   };
 };
 
@@ -184,4 +183,5 @@ function deleteNode(value, node) {
 const tree = Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 
 prettyPrint(tree.buildTree());
-tree.postOrderTraversal((nodeData) => console.log(nodeData));
+tree.levelOrderTraversal((nodeData) => console.log(nodeData));
+console.log(tree.height(23));
