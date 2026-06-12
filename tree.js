@@ -103,17 +103,42 @@ const Tree = (arr) => {
     return;
   }
 
-  function height(value, node = root, heightCount = 0) {
+  function height(
+    value,
+    node = searchNode(value, root),
+    nodeHeight = 0,
+    queue,
+  ) {
+    if (!value) {
+      return;
+    }
+
+    if (!node) return;
+
+    let nodeQ = queue ? queue : [node];
+    let newQueue = [];
+    nodeQ.forEach((node) => {
+      if (node.left) newQueue.push(node.left);
+      if (node.right) newQueue.push(node.right);
+    });
+    if (newQueue.length === 0) {
+      return nodeHeight;
+    } else {
+      return height(value, node, nodeHeight + 1, newQueue);
+    }
+  }
+
+  function depth(value, node = root, depthLevel = 0) {
     if (!value) {
       return;
     }
     if (node) {
       if (value < node.data) {
-        return height(value, node.left, heightCount + 1);
+        return depth(value, node.left, depthLevel + 1);
       } else if (value > node.data) {
-        return height(value, node.right, heightCount + 1);
+        return depth(value, node.right, depthLevel + 1);
       } else {
-        return heightCount;
+        return depthLevel;
       }
     }
   }
@@ -147,6 +172,7 @@ const Tree = (arr) => {
     inOrderTraversal,
     postOrderTraversal,
     height,
+    depth,
   };
 };
 
@@ -189,8 +215,19 @@ function deleteNode(value, node) {
   return node;
 }
 
+function searchNode(value, node) {
+  if (!value) {
+    return;
+  }
+  if (node === null) return node;
+  if (node.data === value) {
+    return node;
+  }
+
+  return searchNode(value, node.left) || searchNode(value, node.right);
+}
+
 const tree = Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 
 prettyPrint(tree.buildTree());
-tree.levelOrderTraversal((nodeData) => console.log(nodeData));
-console.log(tree.height(5));
+console.log(tree.depth(23));
