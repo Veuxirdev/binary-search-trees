@@ -87,7 +87,7 @@ const Tree = (arr) => {
     node.left = inOrderTraversal(callback, node.left);
     callback(node.data);
     node.right = inOrderTraversal(callback, node.right);
-    return;
+    return node;
   }
 
   function preOrderTraversal(callback, node = root) {
@@ -100,7 +100,7 @@ const Tree = (arr) => {
     callback(node.data);
     node.left = preOrderTraversal(callback, node.left);
     node.right = preOrderTraversal(callback, node.right);
-    return;
+    return node;
   }
 
   function height(
@@ -153,7 +153,7 @@ const Tree = (arr) => {
     node.left = postOrderTraversal(callback, node.left);
     node.right = postOrderTraversal(callback, node.right);
     callback(node.data);
-    return;
+    return node;
   }
 
   function deleteItem(value) {
@@ -211,6 +211,7 @@ const Tree = (arr) => {
     height,
     depth,
     isBalanced,
+    rebalance,
   };
 };
 
@@ -267,11 +268,55 @@ function searchNode(value, node) {
     return searchNode(value, node.right);
   }
 }
-
-const tree = Tree([1, 4, 5, 3, 6, 8, 9, 50, 60, 80, 100]);
+const arr = [1, 4, 5, 3, 6, 8, 9, 50, 60, 80, 100];
+const tree = Tree(arr);
 
 prettyPrint(tree.buildTree());
-console.log(tree.isBalanced());
+/*
 tree.levelOrderTraversal((nodeData) => {
   console.log(nodeData);
+});
+*/
+/*
+tree.preOrderTraversal((nodeData) => {
+  console.log(nodeData);
+});
+*/
+/*
+tree.inOrderTraversal((data) => {
+  console.log(data);
+});
+*/
+/*
+tree.postOrderTraversal((data) => {
+  console.log(data);
+});
+*/
+
+// unbalancing the tree
+
+console.log(tree.isBalanced());
+tree.insert(101);
+tree.insert(102);
+prettyPrint(tree.buildTree());
+console.log(tree.isBalanced());
+tree.rebalance();
+prettyPrint(tree.buildTree());
+console.log(tree.isBalanced());
+
+console.log("level order:");
+tree.levelOrderTraversal((nodeData) => {
+  console.log(nodeData);
+});
+console.log("preOrder:");
+tree.preOrderTraversal((nodeData) => {
+  console.log(nodeData);
+});
+console.log("inOrder:");
+tree.inOrderTraversal((data) => {
+  console.log(data);
+});
+console.log("postOrder:");
+tree.postOrderTraversal((data) => {
+  console.log(data);
 });
