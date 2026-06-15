@@ -160,6 +160,43 @@ const Tree = (arr) => {
     root = deleteNode(value, root);
   }
 
+  function isBalanced() {
+    if (root === null || (!root.left && !root.right)) {
+      return true;
+    }
+    const queue = [root];
+    let currentNode = {};
+    let nodesHeightDif = 0;
+    while (queue.length > 0) {
+      currentNode = queue.shift();
+      // get left and right nodes height difference
+      nodesHeightDif =
+        (currentNode.left
+          ? height(currentNode.left.data, currentNode.left)
+          : 0) -
+        (currentNode.right
+          ? height(currentNode.right.data, currentNode.right)
+          : 0);
+      if (nodesHeightDif > 1 || nodesHeightDif < -1) {
+        return false;
+      }
+      if (currentNode.left) queue.push(currentNode.left);
+      if (currentNode.right) queue.push(currentNode.right);
+    }
+    return true;
+  }
+
+  function rebalance() {
+    if (isBalanced()) {
+      return;
+    }
+    const arr = [];
+    levelOrderTraversal((nodeData) => {
+      arr.push(nodeData);
+    });
+    root = buildTree(clearArr(arr));
+  }
+
   return {
     buildTree: () => {
       return root;
@@ -173,6 +210,7 @@ const Tree = (arr) => {
     postOrderTraversal,
     height,
     depth,
+    isBalanced,
   };
 };
 
@@ -223,11 +261,17 @@ function searchNode(value, node) {
   if (node.data === value) {
     return node;
   }
-
-  return searchNode(value, node.left) || searchNode(value, node.right);
+  if (value < node.data) {
+    return searchNode(value, node.left);
+  } else if (value > node.data) {
+    return searchNode(value, node.right);
+  }
 }
 
-const tree = Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+const tree = Tree([1, 4, 5, 3, 6, 8, 9, 50, 60, 80, 100]);
 
 prettyPrint(tree.buildTree());
-console.log(tree.depth(23));
+console.log(tree.isBalanced());
+tree.levelOrderTraversal((nodeData) => {
+  console.log(nodeData);
+});
